@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.1)
+project(boost_test CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-Wall -pedantic -pthread -std=c++17")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+
+add_executable(boost_test main.cpp)
+target_link_libraries(boost_test boost_system boost_filesystem boost_context)
