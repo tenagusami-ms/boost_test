@@ -8,4 +8,4 @@ include_directories(/home/ec2-user/boost_1_77_0)
 link_directories($/home/ec2-user/boost_1_77_0/stage/lib)
 
 add_executable(boost_test main.cpp)
-target_link_libraries(boost_test boost_system boost_coroutine)
+target_link_libraries(boost_test boost_system boost_context)
