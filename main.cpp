@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <iterator>
 #include <boost/coroutine2/coroutine.hpp>
 
 using IntGenerator = boost::coroutines2::coroutine<int>;
@@ -14,7 +15,7 @@ struct FinalEOL{
 
 int main() {
 
-    IntGenerator::pull_type source(
+    auto source{IntGenerator::pull_type(
             [](IntGenerator::push_type& sink){
                 int first=1,second=1;
                 sink(first);
@@ -25,15 +26,14 @@ int main() {
                     second=third;
                     sink(third);
                 }
-            });
+            })};
 
     for(auto i:source) {
         std::cout << i << " ";
     }
     std::cout<<"\n";
 
-    //const int num=5, width=15;
-    StringReceiver::push_type writer(
+     auto writer{StringReceiver::push_type(
             [num=5, width=15](StringReceiver::pull_type& in){
                 // 何が起きたとしても、最終行を終了する
                 FinalEOL eol;
@@ -41,7 +41,7 @@ int main() {
                 for (;;){
                     for(int i=0;i<num;++i){
                         // 入力を使い果たしたらやめる
-                        if(!in) return;
+                        if(!in) return 1;
                         std::cout << std::setw(width) << in.get();
                         // この要素をハンドルし終わったので、次へ進む
                         in();
@@ -49,7 +49,7 @@ int main() {
                     // num個の要素の後、改行する
                     std::cout << std::endl;
                 }
-            });
+            })};
 
     std::vector<std::string> words{
             "peas", "porridge", "hot", "peas",
@@ -57,7 +57,7 @@ int main() {
             "in", "the", "pot", "nine",
             "days", "old" };
 
-    std::copy(begin(words),end(words),begin(writer));
+    std::copy(words.begin(),words.end(),begin(writer));
 
     return 0;
 }
